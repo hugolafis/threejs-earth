@@ -17,8 +17,8 @@
     flowMap = (flowMap.xy - 0.5) * 2.0;
 
     float cloudMixSpeed = 0.01;
-    float flowSpeed = 0.15;
-    float flowIntensity = 0.3;
+    float flowSpeed = 0.015;
+    float flowIntensity = 0.15;
     float timePhaseA = fract(time * flowSpeed);
     float timePhaseB = fract(timePhaseA + 0.5);
     float flowMixed = abs((timePhaseA - 0.5) * 2.0);

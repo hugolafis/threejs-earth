@@ -27,10 +27,6 @@ export class Viewer {
       this.earth.rotation.y += 1 * (Math.PI / 180) * dt;
       this.earthMaterial.mapClouds.value.offset.x = this.earthMaterial.mapClouds.value.offset.x - 0.001 * dt;
 
-      if (this.earthMaterial.mapClouds.value.offset.x <= -1.0) {
-        this.earthMaterial.mapClouds.value.offset.x = 0.0;
-      }
-
       this.earthMaterial.mapClouds.value.updateMatrix();
 
       this.earthMaterial.time.value += dt;
@@ -81,13 +77,15 @@ export class Viewer {
     const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
     const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.png');
     const mapClouds2 = await textureLoader.loadAsync('./assets/2k_earth_clouds2.png');
-    const mapFlow = await textureLoader.loadAsync('./assets/flowmap2.png');
+    const mapFlow = await textureLoader.loadAsync('./assets/flowmap3.png');
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
 
     mapClouds2.wrapS = THREE.RepeatWrapping;
     mapClouds2.wrapT = THREE.RepeatWrapping;
+
+    //mapFlow.generateMipmaps = false;
 
     const sphereGeo = new THREE.SphereGeometry(1, 256, 256);
     this.earthMaterial = new EarthPhysicalMaterial(

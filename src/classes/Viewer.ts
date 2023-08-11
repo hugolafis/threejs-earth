@@ -1,9 +1,14 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { EarthPhysicalMaterial } from './materials/EarthPhysicalMaterial';
 
 export class Viewer {
   private camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
+
+  private earth: THREE.Mesh;
+  private earthGroup: THREE.Group;
+
   private readonly scene = new THREE.Scene();
 
   constructor(private readonly renderer: THREE.WebGLRenderer, private readonly canvas: HTMLCanvasElement) {
@@ -16,6 +21,10 @@ export class Viewer {
 
   readonly update = (dt: number) => {
     this.controls.update();
+
+    if (this.earth) {
+      this.earth.rotation.y += 1 * (Math.PI / 180) * dt;
+    }
 
     this.renderer.render(this.scene, this.camera);
   };
@@ -58,11 +67,23 @@ export class Viewer {
   private async initMeshes() {
     const textureLoader = new THREE.TextureLoader();
 
-    const sphereGeo = new THREE.SphereGeometry(1);
-    const sphereMat = new THREE.MeshPhysicalMaterial();
+    const map = await textureLoader.loadAsync('/assets/2k_earth_daymap.jpg');
+    const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
 
-    const mesh = new THREE.Mesh(sphereGeo, sphereMat);
+    const sphereGeo = new THREE.SphereGeometry(1, 256, 256);
+    const sphereMat = new EarthPhysicalMaterial({
+      map,
+      emissiveMap,
+      emissiveIntensity: 1,
+      emissive: new THREE.Color(0xfaf1af),
+    });
 
-    this.scene.add(mesh);
+    this.earth = new THREE.Mesh(sphereGeo, sphereMat);
+    this.earthGroup = new THREE.Group();
+
+    this.earthGroup.add(this.earth);
+    this.earthGroup.rotation.z = -23.4 * (Math.PI / 180);
+
+    this.scene.add(this.earthGroup);
   }
 }

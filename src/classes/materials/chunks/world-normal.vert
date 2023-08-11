@@ -1,0 +1,1 @@
+worldNormal = normalMatrix * normal;

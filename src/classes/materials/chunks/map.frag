@@ -12,7 +12,7 @@
 
   #ifdef USE_MAP_CLOUDS
     vec4 cloudsDiffuseColor = texture2D( mapClouds, vCloudsUv );
-    vec4 mixedCloudDiffuse = mix(sampledDiffuseColor, cloudsDiffuseColor, cloudsDiffuseColor.r);
+    vec4 mixedCloudDiffuse = mix(sampledDiffuseColor, cloudsDiffuseColor, cloudsDiffuseColor.a);
 
     diffuseColor *= mixedCloudDiffuse;
   #else

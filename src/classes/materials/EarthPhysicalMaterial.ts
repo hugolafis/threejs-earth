@@ -28,6 +28,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
       }
 
       shader.vertexShader = `varying vec3 worldNormal;\n ${shader.vertexShader}`;
+      shader.vertexShader = `varying vec3 worldPosition;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec3 sunDir;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec2 vCloudsUv;\n ${shader.vertexShader}`;
       shader.vertexShader = `uniform mat3 cloudsTransform;\n ${shader.vertexShader}`;
@@ -44,6 +45,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
       );
 
       shader.fragmentShader = `varying vec3 worldNormal;\n ${shader.fragmentShader}`;
+      shader.fragmentShader = `varying vec3 worldPosition;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec3 sunDir;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform sampler2D mapClouds;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec2 vCloudsUv;\n ${shader.fragmentShader}`;

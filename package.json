@@ -1,5 +1,5 @@
 {
-  "repository": "https://github.com/hugolafis/threejs-stencils",
+  "repository": "https://github.com/hugolafis/threejs-earth",
   "license": "UNLICENSED",
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",

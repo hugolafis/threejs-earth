@@ -34,8 +34,6 @@ export class Viewer {
       this.earthMaterial.mapClouds.value.updateMatrix();
 
       this.earthMaterial.time.value += dt;
-
-      console.log(this.earthMaterial.mapClouds.value.matrix);
     }
 
     this.renderer.render(this.scene, this.camera);
@@ -66,7 +64,7 @@ export class Viewer {
   }
 
   private initLights() {
-    const light = new THREE.DirectionalLight();
+    const light = new THREE.DirectionalLight(undefined, 1.0);
 
     const lightPos = new THREE.Vector3(1, 0, 0).multiplyScalar(25);
     light.position.copy(lightPos);
@@ -81,7 +79,7 @@ export class Viewer {
 
     const map = await textureLoader.loadAsync('./assets/2k_earth_daymap.jpg');
     const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
-    const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.jpg');
+    const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.png');
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
@@ -91,7 +89,7 @@ export class Viewer {
       {
         map,
         emissiveMap,
-        emissiveIntensity: 1,
+        emissiveIntensity: 0.5,
         emissive: new THREE.Color(0xfaf1af),
       },
       {

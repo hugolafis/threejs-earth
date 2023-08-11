@@ -4,7 +4,7 @@
   vec3 sunDir = vec4(viewMatrix * vec4(1., 0., 0., 0.0)).xyz;
   //float sunDot = dot(worldNormal, sunDir);
 
-  float bias = 0.9;
+  float bias = 0.75;
   float scale = 5.0;
   float sunDot = bias + scale * pow(dot(worldNormal, sunDir), 1.0);
   sunDot = clamp(sunDot, 0., 1.);

@@ -8,6 +8,7 @@ export class Viewer {
 
   private earth: THREE.Mesh;
   private earthGroup: THREE.Group;
+  private earthMaterial: EarthPhysicalMaterial;
 
   private readonly scene = new THREE.Scene();
 
@@ -22,8 +23,19 @@ export class Viewer {
   readonly update = (dt: number) => {
     this.controls.update();
 
-    if (this.earth) {
+    if (this.earth && this.earthMaterial) {
       this.earth.rotation.y += 1 * (Math.PI / 180) * dt;
+      this.earthMaterial.mapClouds.value.offset.x = this.earthMaterial.mapClouds.value.offset.x - 0.001 * dt;
+
+      if (this.earthMaterial.mapClouds.value.offset.x <= -1.0) {
+        this.earthMaterial.mapClouds.value.offset.x = 0.0;
+      }
+
+      this.earthMaterial.mapClouds.value.updateMatrix();
+
+      this.earthMaterial.time.value += dt;
+
+      console.log(this.earthMaterial.mapClouds.value.matrix);
     }
 
     this.renderer.render(this.scene, this.camera);
@@ -69,16 +81,25 @@ export class Viewer {
 
     const map = await textureLoader.loadAsync('/assets/2k_earth_daymap.jpg');
     const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
+    const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.jpg');
+
+    mapClouds.wrapS = THREE.RepeatWrapping;
+    mapClouds.wrapT = THREE.RepeatWrapping;
 
     const sphereGeo = new THREE.SphereGeometry(1, 256, 256);
-    const sphereMat = new EarthPhysicalMaterial({
-      map,
-      emissiveMap,
-      emissiveIntensity: 1,
-      emissive: new THREE.Color(0xfaf1af),
-    });
+    this.earthMaterial = new EarthPhysicalMaterial(
+      {
+        map,
+        emissiveMap,
+        emissiveIntensity: 1,
+        emissive: new THREE.Color(0xfaf1af),
+      },
+      {
+        mapClouds,
+      }
+    );
 
-    this.earth = new THREE.Mesh(sphereGeo, sphereMat);
+    this.earth = new THREE.Mesh(sphereGeo, this.earthMaterial);
     this.earthGroup = new THREE.Group();
 
     this.earthGroup.add(this.earth);

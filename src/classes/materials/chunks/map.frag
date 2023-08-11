@@ -16,7 +16,7 @@
     vec2 flowMap = texture2D( mapFlow, vCloudsUv ).xy;
     flowMap = (flowMap.xy - 0.5) * 2.0;
 
-    float cloudMixSpeed = 0.1;
+    float cloudMixSpeed = 0.01;
     float flowSpeed = 0.15;
     float flowIntensity = 0.3;
     float timePhaseA = fract(time * flowSpeed);

@@ -6,10 +6,13 @@ import uv from './chunks/clouds-uv.vert';
 
 export type EarthMaterialParams = {
   mapClouds?: Texture;
+  mapFlow?: Texture;
 };
 
 export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
   readonly mapClouds: IUniform<Texture | null> = { value: null };
+  readonly mapClouds2: IUniform<Texture | null> = { value: null };
+  readonly mapFlow: IUniform<Texture | null> = { value: null };
   readonly time: IUniform<number> = { value: 0.0 };
 
   // Have to split the params into two instead of a union, as three tries to take all properties and then errors out
@@ -17,6 +20,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
     super(params);
 
     this.mapClouds.value = earthParams?.mapClouds ?? null;
+    this.mapFlow.value = earthParams?.mapFlow ?? null;
 
     this.onBeforeCompile = shader => {
       shader.uniforms.time = this.time;
@@ -24,6 +28,8 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
       if (this.mapClouds.value) {
         this.defines.USE_MAP_CLOUDS = true;
         shader.uniforms.mapClouds = this.mapClouds;
+        shader.uniforms.mapClouds2 = this.mapClouds2;
+        shader.uniforms.mapFlow = this.mapFlow;
         shader.uniforms.cloudsTransform = { value: this.mapClouds.value.matrix };
       }
 
@@ -48,7 +54,10 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
       shader.fragmentShader = `varying vec3 worldPosition;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec3 sunDir;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform sampler2D mapClouds;\n ${shader.fragmentShader}`;
+      shader.fragmentShader = `uniform sampler2D mapClouds2;\n ${shader.fragmentShader}`;
+      shader.fragmentShader = `uniform sampler2D mapFlow;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec2 vCloudsUv;\n ${shader.fragmentShader}`;
+      shader.fragmentShader = `uniform float time;\n ${shader.fragmentShader}`;
 
       shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `${map}`);
       shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `${emissive}`);

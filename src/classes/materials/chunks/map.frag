@@ -11,8 +11,22 @@
 	#endif
 
   #ifdef USE_MAP_CLOUDS
-    vec4 cloudsDiffuseColor = texture2D( mapClouds, vCloudsUv );
-    vec4 mixedCloudDiffuse = mix(sampledDiffuseColor, cloudsDiffuseColor, cloudsDiffuseColor.a);
+
+    // credit: Martin Donald for the flowmap implementation
+    vec2 flowMap = texture2D( mapFlow, vCloudsUv ).xy;
+    flowMap = (flowMap.xy - 0.5) * 2.0;
+
+    float flowSpeed = 0.15;
+    float flowIntensity = 0.5;
+    float timePhaseA = fract(time * flowSpeed);
+    float timePhaseB = fract(timePhaseA + 0.5);
+    float flowMixed = abs((timePhaseA - 0.5) * 2.0);
+
+    vec4 cloudsDiffuseColorA = texture2D( mapClouds, vCloudsUv + (flowMap * timePhaseA * flowIntensity));
+    vec4 cloudsDiffuseColorB = texture2D( mapClouds, vCloudsUv + (flowMap * timePhaseB * flowIntensity));
+    vec4 mixedCloudSamples = mix(cloudsDiffuseColorA, cloudsDiffuseColorB, flowMixed);
+
+    vec4 mixedCloudDiffuse = mix(sampledDiffuseColor, mixedCloudSamples, mixedCloudSamples.a);
 
     diffuseColor *= mixedCloudDiffuse;
   #else

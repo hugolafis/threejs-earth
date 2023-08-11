@@ -80,6 +80,8 @@ export class Viewer {
     const map = await textureLoader.loadAsync('./assets/2k_earth_daymap.jpg');
     const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
     const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.png');
+    const mapClouds2 = await textureLoader.loadAsync('./assets/2k_earth_clouds2.png');
+    const mapFlow = await textureLoader.loadAsync('./assets/flowmap.png');
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
@@ -94,6 +96,7 @@ export class Viewer {
       },
       {
         mapClouds,
+        mapFlow,
       }
     );
 

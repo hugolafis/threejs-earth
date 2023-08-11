@@ -79,7 +79,7 @@ export class Viewer {
   private async initMeshes() {
     const textureLoader = new THREE.TextureLoader();
 
-    const map = await textureLoader.loadAsync('/assets/2k_earth_daymap.jpg');
+    const map = await textureLoader.loadAsync('./assets/2k_earth_daymap.jpg');
     const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
     const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.jpg');
 

@@ -4,7 +4,8 @@
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",
     "start": "webpack serve --config ./bundler/webpack.dev.js",
-    "pages": "git push origin :gh-pages && git subtree push --prefix dist origin gh-pages"
+    "pages": "git push origin :gh-pages && git subtree push --prefix dist origin gh-pages",
+    "deploy": "yarn build && gh-pages --dist dist --branch gh-pages"
   },
   "dependencies": {
     "@babel/core": "^7.16.12",
@@ -34,6 +35,7 @@
     "glslify": "^7.1.1",
     "ts-loader": "^9.4.2",
     "ts-shader-loader": "^2.0.2",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "gh-pages": "^6.0.0"
   }
 }

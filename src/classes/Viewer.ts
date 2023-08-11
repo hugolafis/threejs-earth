@@ -86,6 +86,9 @@ export class Viewer {
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
 
+    mapClouds2.wrapS = THREE.RepeatWrapping;
+    mapClouds2.wrapT = THREE.RepeatWrapping;
+
     const sphereGeo = new THREE.SphereGeometry(1, 256, 256);
     this.earthMaterial = new EarthPhysicalMaterial(
       {

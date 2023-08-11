@@ -28,6 +28,9 @@
 
   vec4 maskedEmissive = mix(emissiveColor, vec4(0.), sunDot);
 
+  // Mask out the lights by the clouds
+  maskedEmissive.rgb *= mixedClouds.a;
+
 	//totalEmissiveRadiance *= emissiveColor.rgb;
   totalEmissiveRadiance *= maskedEmissive.rgb;
 

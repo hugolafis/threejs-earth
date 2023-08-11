@@ -6,6 +6,7 @@ import uv from './chunks/clouds-uv.vert';
 
 export type EarthMaterialParams = {
   mapClouds?: Texture;
+  mapClouds2?: Texture;
   mapFlow?: Texture;
 };
 
@@ -21,6 +22,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
 
     this.mapClouds.value = earthParams?.mapClouds ?? null;
     this.mapFlow.value = earthParams?.mapFlow ?? null;
+    this.mapClouds2.value = earthParams?.mapClouds2 ?? null;
 
     this.onBeforeCompile = shader => {
       shader.uniforms.time = this.time;
@@ -31,6 +33,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
         shader.uniforms.mapClouds2 = this.mapClouds2;
         shader.uniforms.mapFlow = this.mapFlow;
         shader.uniforms.cloudsTransform = { value: this.mapClouds.value.matrix };
+        shader.uniforms.clouds2Transform = { value: this.mapClouds.value.matrix };
       }
 
       shader.vertexShader = `varying vec3 worldNormal;\n ${shader.vertexShader}`;

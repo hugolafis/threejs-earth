@@ -96,6 +96,7 @@ export class Viewer {
       },
       {
         mapClouds,
+        mapClouds2,
         mapFlow,
       }
     );

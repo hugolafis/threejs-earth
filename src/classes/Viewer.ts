@@ -73,11 +73,21 @@ export class Viewer {
   private async initMeshes() {
     const textureLoader = new THREE.TextureLoader();
 
-    const map = await textureLoader.loadAsync('./assets/2k_earth_daymap.jpg');
-    const emissiveMap = await textureLoader.loadAsync('./assets/2k_earth_emissive.png');
-    const mapClouds = await textureLoader.loadAsync('./assets/2k_earth_clouds.png');
-    const mapClouds2 = await textureLoader.loadAsync('./assets/2k_earth_clouds2.png');
-    const mapFlow = await textureLoader.loadAsync('./assets/flowmap3.png');
+    const textures = await Promise.all([
+      textureLoader.loadAsync('./assets/2k_earth_daymap.jpg'),
+      textureLoader.loadAsync('./assets/2k_earth_emissive.png'),
+      textureLoader.loadAsync('./assets/2k_earth_clouds.png'),
+      textureLoader.loadAsync('./assets/2k_earth_clouds2.png'),
+      textureLoader.loadAsync('./assets/flowmap3.png'),
+      textureLoader.loadAsync('./assets/2k_earth_normal_map.png'),
+    ]);
+
+    const map = textures[0];
+    const emissiveMap = textures[1];
+    const mapClouds = textures[2];
+    const mapClouds2 = textures[3];
+    const mapFlow = textures[4];
+    const normalMap = textures[5];
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
@@ -94,6 +104,7 @@ export class Viewer {
         emissiveMap,
         emissiveIntensity: 0.5,
         emissive: new THREE.Color(0xfaf1af),
+        normalMap,
       },
       {
         mapClouds,

@@ -31,8 +31,8 @@
     vec4 clouds2DiffuseColorA = texture2D( mapClouds2, vCloudsUv + (flowMap * timePhaseA * flowIntensity));
     vec4 clouds2DiffuseColorB = texture2D( mapClouds2, vCloudsUv + (flowMap * timePhaseB * flowIntensity));
 
-    vec4 mixedCloudSamples = mix(cloudsDiffuseColorA, cloudsDiffuseColorB, flowMixed);
-    vec4 mixedCloud2Samples = mix(clouds2DiffuseColorA, clouds2DiffuseColorB, flowMixed);
+    vec4 mixedCloudSamples = mix(vec4(cloudsDiffuseColorA.a), vec4(cloudsDiffuseColorB.a), flowMixed);
+    vec4 mixedCloud2Samples = mix(vec4(clouds2DiffuseColorA.a), vec4(clouds2DiffuseColorB.a), flowMixed);
 
     mixedCloudSamples.a *= cloudMixing;
     mixedCloud2Samples.a *= 1.0 - cloudMixing;

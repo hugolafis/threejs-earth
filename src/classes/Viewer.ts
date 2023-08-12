@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EarthPhysicalMaterial } from './materials/EarthPhysicalMaterial';
+import { AtmosphereMaterial } from './materials/AtmosphereMaterial';
 
 export class Viewer {
   private camera: THREE.PerspectiveCamera;
@@ -46,7 +47,7 @@ export class Viewer {
   private initCamera() {
     this.camera = new THREE.PerspectiveCamera(75, this.canvas.clientWidth / this.canvas.clientHeight);
 
-    this.camera.position.set(5, 5, 0);
+    this.camera.position.set(1.1, 1.25, -1.25);
 
     this.scene.add(this.camera);
   }
@@ -97,8 +98,6 @@ export class Viewer {
     mapClouds2.wrapS = THREE.RepeatWrapping;
     mapClouds2.wrapT = THREE.RepeatWrapping;
 
-    //mapFlow.generateMipmaps = false;
-
     const sphereGeo = new THREE.SphereGeometry(1, 256, 256);
     this.earthMaterial = new EarthPhysicalMaterial(
       {
@@ -116,10 +115,16 @@ export class Viewer {
       }
     );
 
+    const atmosphericsGeo = new THREE.SphereGeometry(1.005, 256, 256);
+    const atmosphericsMat = new AtmosphereMaterial();
+
+    const atmospherics = new THREE.Mesh(atmosphericsGeo, atmosphericsMat);
+
     this.earth = new THREE.Mesh(sphereGeo, this.earthMaterial);
     this.earthGroup = new THREE.Group();
 
     this.earthGroup.add(this.earth);
+    this.earthGroup.add(atmospherics);
     this.earthGroup.rotation.z = -23.4 * (Math.PI / 180);
 
     this.scene.add(this.earthGroup);

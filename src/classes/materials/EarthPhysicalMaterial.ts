@@ -65,10 +65,10 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
 
       shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `${map}`);
       shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `${emissive}`);
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <opaque_fragment>',
-        ` ${atmospherics}\n #include <opaque_fragment>`
-      );
+      // shader.fragmentShader = shader.fragmentShader.replace(
+      //   '#include <opaque_fragment>',
+      //   ` ${atmospherics}\n #include <opaque_fragment>`
+      // );
     };
   }
 }

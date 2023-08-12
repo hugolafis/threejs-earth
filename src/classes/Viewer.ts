@@ -78,7 +78,7 @@ export class Viewer {
       textureLoader.loadAsync('./assets/2k_earth_emissive.png'),
       textureLoader.loadAsync('./assets/2k_earth_clouds.png'),
       textureLoader.loadAsync('./assets/2k_earth_clouds2.png'),
-      textureLoader.loadAsync('./assets/flowmap3.png'),
+      textureLoader.loadAsync('./assets/flowmap4.png'),
       textureLoader.loadAsync('./assets/2k_earth_normal_map.png'),
       textureLoader.loadAsync('./assets/2k_earth_water_mask.png'),
     ]);

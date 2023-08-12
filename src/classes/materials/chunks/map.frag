@@ -13,7 +13,7 @@
   #ifdef USE_MAP_CLOUDS
 
     // credit: Martin Donald for the flowmap implementation
-    vec2 flowMap = texture2D( mapFlow, vCloudsUv ).xy;
+    vec2 flowMap = texture2D( mapFlow, vMapUv ).xy;
     flowMap = (flowMap.xy - 0.5) * 2.0;
 
     float cloudMixSpeed = 0.01;

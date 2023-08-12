@@ -80,6 +80,7 @@ export class Viewer {
       textureLoader.loadAsync('./assets/2k_earth_clouds2.png'),
       textureLoader.loadAsync('./assets/flowmap3.png'),
       textureLoader.loadAsync('./assets/2k_earth_normal_map.png'),
+      textureLoader.loadAsync('./assets/2k_earth_water_mask.png'),
     ]);
 
     const map = textures[0];
@@ -88,6 +89,7 @@ export class Viewer {
     const mapClouds2 = textures[3];
     const mapFlow = textures[4];
     const normalMap = textures[5];
+    const roughnessMap = textures[6];
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
@@ -102,9 +104,10 @@ export class Viewer {
       {
         map,
         emissiveMap,
-        emissiveIntensity: 0.5,
+        emissiveIntensity: 1,
         emissive: new THREE.Color(0xfaf1af),
         normalMap,
+        //roughnessMap,
       },
       {
         mapClouds,

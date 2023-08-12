@@ -3,6 +3,7 @@ import worldNormal from './chunks/world-normal.vert';
 import emissive from './chunks/emissive.frag';
 import map from './chunks/map.frag';
 import uv from './chunks/clouds-uv.vert';
+import atmospherics from './chunks/atmospherics.frag';
 
 export type EarthMaterialParams = {
   mapClouds?: Texture;
@@ -64,6 +65,10 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
 
       shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `${map}`);
       shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `${emissive}`);
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <opaque_fragment>',
+        ` ${atmospherics}\n #include <opaque_fragment>`
+      );
     };
   }
 }

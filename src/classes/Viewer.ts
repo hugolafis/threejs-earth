@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EarthPhysicalMaterial } from './materials/EarthPhysicalMaterial';
 import { AtmosphereMaterial } from './materials/AtmosphereMaterial';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 
 export class Viewer {
   private camera: THREE.PerspectiveCamera;
@@ -73,6 +74,7 @@ export class Viewer {
 
   private async initMeshes() {
     const textureLoader = new THREE.TextureLoader();
+    const rgbeLoader = new RGBELoader();
 
     const textures = await Promise.all([
       textureLoader.loadAsync('./assets/2k_earth_daymap.jpg'),
@@ -84,13 +86,16 @@ export class Viewer {
       textureLoader.loadAsync('./assets/2k_earth_water_mask.png'),
     ]);
 
+    const starMap = await rgbeLoader.loadAsync('./assets/starmap_g4k.hdr');
+    starMap.mapping = THREE.EquirectangularReflectionMapping;
+    this.scene.backgroundIntensity = 0.05;
+
     const map = textures[0];
     const emissiveMap = textures[1];
     const mapClouds = textures[2];
     const mapClouds2 = textures[3];
     const mapFlow = textures[4];
     const normalMap = textures[5];
-    const roughnessMap = textures[6];
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;
@@ -128,5 +133,18 @@ export class Viewer {
     this.earthGroup.rotation.z = -23.4 * (Math.PI / 180);
 
     this.scene.add(this.earthGroup);
+
+    // Stars
+    // const starFieldGeo = new THREE.SphereGeometry(1000, 24, 24);
+    // const starFieldMat = new THREE.MeshBasicMaterial({
+    //   lightMap: starMap,
+    //   side: THREE.BackSide,
+    //   lightMapIntensity: 0.25,
+    // });
+    // const stars = new THREE.Mesh(starFieldGeo, starFieldMat);
+
+    this.scene.background = starMap;
+
+    //this.scene.add(stars);
   }
 }

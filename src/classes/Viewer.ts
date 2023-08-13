@@ -28,8 +28,10 @@ export class Viewer {
     if (this.earth && this.earthMaterial) {
       this.earth.rotation.y += 1 * (Math.PI / 180) * dt;
       this.earthMaterial.mapClouds.value.offset.x = this.earthMaterial.mapClouds.value.offset.x - 0.001 * dt;
+      this.earthMaterial.mapFlow.value.offset.x = this.earthMaterial.mapFlow.value.offset.x + 0.005 * dt;
 
       this.earthMaterial.mapClouds.value.updateMatrix();
+      this.earthMaterial.mapFlow.value.updateMatrix();
 
       this.earthMaterial.time.value += dt;
     }
@@ -96,6 +98,9 @@ export class Viewer {
     const mapClouds2 = textures[3];
     const mapFlow = textures[4];
     const normalMap = textures[5];
+
+    mapFlow.wrapS = THREE.RepeatWrapping;
+    mapFlow.wrapT = THREE.RepeatWrapping;
 
     mapClouds.wrapS = THREE.RepeatWrapping;
     mapClouds.wrapT = THREE.RepeatWrapping;

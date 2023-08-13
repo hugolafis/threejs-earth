@@ -34,14 +34,16 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
         shader.uniforms.mapClouds2 = this.mapClouds2;
         shader.uniforms.mapFlow = this.mapFlow;
         shader.uniforms.cloudsTransform = { value: this.mapClouds.value.matrix };
-        shader.uniforms.clouds2Transform = { value: this.mapClouds.value.matrix };
+        shader.uniforms.flowTransform = { value: this.mapFlow.value.matrix };
       }
 
       shader.vertexShader = `varying vec3 worldNormal;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec3 worldPosition;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec3 sunDir;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec2 vCloudsUv;\n ${shader.vertexShader}`;
+      shader.vertexShader = `varying vec2 vFlowUv;\n ${shader.vertexShader}`;
       shader.vertexShader = `uniform mat3 cloudsTransform;\n ${shader.vertexShader}`;
+      shader.vertexShader = `uniform mat3 flowTransform;\n ${shader.vertexShader}`;
       shader.vertexShader = `uniform float time;\n ${shader.vertexShader}`;
       shader.vertexShader = shader.vertexShader.replace(
         '#include <normal_vertex>',
@@ -61,6 +63,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
       shader.fragmentShader = `uniform sampler2D mapClouds2;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform sampler2D mapFlow;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec2 vCloudsUv;\n ${shader.fragmentShader}`;
+      shader.fragmentShader = `varying vec2 vFlowUv;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform float time;\n ${shader.fragmentShader}`;
 
       shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `${map}`);

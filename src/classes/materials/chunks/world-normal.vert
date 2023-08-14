@@ -1,2 +1,2 @@
-worldNormal = normalMatrix * normal;
-worldPosition = vec4(modelViewMatrix * vec4(position, 1.0)).xyz;
+viewNormal = normalMatrix * normal;
+worldNormal = vec4(modelMatrix * vec4(normal, 0.0)).xyz;

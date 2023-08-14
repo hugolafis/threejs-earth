@@ -41,4 +41,10 @@ function update() {
   window.requestAnimationFrame(update);
 }
 
+const selectInput = document.getElementById('season') as HTMLSelectElement;
+selectInput.addEventListener('change', ev => {
+  const value = (ev.target as HTMLSelectElement).value;
+  viewer.setSunPosition(value);
+});
+
 init();

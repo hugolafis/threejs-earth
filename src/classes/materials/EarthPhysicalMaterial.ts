@@ -1,4 +1,4 @@
-import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters, Texture, Vector2 } from 'three';
+import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters, Texture, Vector2, Vector3 } from 'three';
 import worldNormal from './chunks/world-normal.vert';
 import emissive from './chunks/emissive.frag';
 import map from './chunks/map.frag';
@@ -9,6 +9,7 @@ export type EarthMaterialParams = {
   mapClouds?: Texture;
   mapClouds2?: Texture;
   mapFlow?: Texture;
+  sunDirection?: Vector3;
 };
 
 export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
@@ -16,6 +17,7 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
   readonly mapClouds2: IUniform<Texture | null> = { value: null };
   readonly mapFlow: IUniform<Texture | null> = { value: null };
   readonly time: IUniform<number> = { value: 0.0 };
+  readonly sunDirection: IUniform<Vector3 | null> = { value: null };
 
   // Have to split the params into two instead of a union, as three tries to take all properties and then errors out
   constructor(params?: MeshPhysicalMaterialParameters, earthParams?: EarthMaterialParams) {
@@ -24,9 +26,11 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
     this.mapClouds.value = earthParams?.mapClouds ?? null;
     this.mapFlow.value = earthParams?.mapFlow ?? null;
     this.mapClouds2.value = earthParams?.mapClouds2 ?? null;
+    this.sunDirection.value = earthParams?.sunDirection ?? null;
 
     this.onBeforeCompile = shader => {
       shader.uniforms.time = this.time;
+      shader.uniforms.sunDirection = this.sunDirection;
 
       if (this.mapClouds.value) {
         this.defines.USE_MAP_CLOUDS = true;
@@ -37,14 +41,18 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
         shader.uniforms.flowTransform = { value: this.mapFlow.value.matrix };
       }
 
+      shader.vertexShader = `varying vec3 viewNormal;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec3 worldNormal;\n ${shader.vertexShader}`;
-      shader.vertexShader = `varying vec3 worldPosition;\n ${shader.vertexShader}`;
-      shader.vertexShader = `varying vec3 sunDir;\n ${shader.vertexShader}`;
+
       shader.vertexShader = `varying vec2 vCloudsUv;\n ${shader.vertexShader}`;
       shader.vertexShader = `varying vec2 vFlowUv;\n ${shader.vertexShader}`;
+
+      shader.vertexShader = `uniform vec3 sunDirection;\n ${shader.vertexShader}`;
       shader.vertexShader = `uniform mat3 cloudsTransform;\n ${shader.vertexShader}`;
       shader.vertexShader = `uniform mat3 flowTransform;\n ${shader.vertexShader}`;
+
       shader.vertexShader = `uniform float time;\n ${shader.vertexShader}`;
+
       shader.vertexShader = shader.vertexShader.replace(
         '#include <normal_vertex>',
         `#include <normal_vertex>\n
@@ -56,22 +64,20 @@ export class EarthPhysicalMaterial extends MeshPhysicalMaterial {
         ${uv}`
       );
 
+      shader.fragmentShader = `varying vec3 viewNormal;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec3 worldNormal;\n ${shader.fragmentShader}`;
-      shader.fragmentShader = `varying vec3 worldPosition;\n ${shader.fragmentShader}`;
-      shader.fragmentShader = `varying vec3 sunDir;\n ${shader.fragmentShader}`;
+
+      shader.fragmentShader = `uniform vec3 sunDirection;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform sampler2D mapClouds;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform sampler2D mapClouds2;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform sampler2D mapFlow;\n ${shader.fragmentShader}`;
+
       shader.fragmentShader = `varying vec2 vCloudsUv;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `varying vec2 vFlowUv;\n ${shader.fragmentShader}`;
       shader.fragmentShader = `uniform float time;\n ${shader.fragmentShader}`;
 
       shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `${map}`);
       shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `${emissive}`);
-      // shader.fragmentShader = shader.fragmentShader.replace(
-      //   '#include <opaque_fragment>',
-      //   ` ${atmospherics}\n #include <opaque_fragment>`
-      // );
     };
   }
 }

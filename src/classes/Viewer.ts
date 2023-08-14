@@ -8,9 +8,11 @@ export class Viewer {
   private camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
 
+  private sun: THREE.DirectionalLight;
   private earth: THREE.Mesh;
   private earthGroup: THREE.Group;
   private earthMaterial: EarthPhysicalMaterial;
+  private atmosphereMaterial: AtmosphereMaterial;
 
   private readonly scene = new THREE.Scene();
 
@@ -22,11 +24,40 @@ export class Viewer {
     this.initMeshes();
   }
 
+  setSunPosition(season: string) {
+    if (!this.sun) {
+      return;
+    }
+
+    switch (season) {
+      case 'spring':
+        this.sun.position.x = 0;
+        this.sun.position.z = 1;
+
+        break;
+      case 'summer':
+        this.sun.position.x = 1;
+        this.sun.position.z = 0;
+
+        break;
+      case 'autumn':
+        this.sun.position.x = 0;
+        this.sun.position.z = -1;
+
+        break;
+      case 'winter':
+        this.sun.position.x = -1;
+        this.sun.position.z = 0;
+
+        break;
+    }
+  }
+
   readonly update = (dt: number) => {
     this.controls.update();
 
     if (this.earth && this.earthMaterial) {
-      this.earth.rotation.y += 1 * (Math.PI / 180) * dt;
+      this.earth.rotation.y += 5 * (Math.PI / 180) * dt;
       this.earthMaterial.mapClouds.value.offset.x = this.earthMaterial.mapClouds.value.offset.x - 0.001 * dt;
       this.earthMaterial.mapFlow.value.offset.x = this.earthMaterial.mapFlow.value.offset.x + 0.005 * dt;
 
@@ -69,9 +100,8 @@ export class Viewer {
     const lightPos = new THREE.Vector3(1, 0, 0).multiplyScalar(25);
     light.position.copy(lightPos);
 
-    const helper = new THREE.DirectionalLightHelper(light);
     this.scene.add(light);
-    this.scene.add(helper);
+    this.sun = light;
   }
 
   private async initMeshes() {
@@ -122,13 +152,14 @@ export class Viewer {
         mapClouds,
         mapClouds2,
         mapFlow,
+        sunDirection: this.sun.position,
       }
     );
 
     const atmosphericsGeo = new THREE.SphereGeometry(1.005, 256, 256);
-    const atmosphericsMat = new AtmosphereMaterial();
+    this.atmosphereMaterial = new AtmosphereMaterial(this.sun.position);
 
-    const atmospherics = new THREE.Mesh(atmosphericsGeo, atmosphericsMat);
+    const atmospherics = new THREE.Mesh(atmosphericsGeo, this.atmosphereMaterial);
 
     this.earth = new THREE.Mesh(sphereGeo, this.earthMaterial);
     this.earthGroup = new THREE.Group();

@@ -57,7 +57,7 @@ export class Viewer {
     this.controls.update();
 
     if (this.earth && this.earthMaterial) {
-      this.earth.rotation.y += 5 * (Math.PI / 180) * dt;
+      this.earth.rotation.y += 1 * (Math.PI / 180) * dt;
       this.earthMaterial.mapClouds.value.offset.x = this.earthMaterial.mapClouds.value.offset.x - 0.001 * dt;
       this.earthMaterial.mapFlow.value.offset.x = this.earthMaterial.mapFlow.value.offset.x + 0.005 * dt;
 

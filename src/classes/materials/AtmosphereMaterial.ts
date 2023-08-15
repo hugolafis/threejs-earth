@@ -1,4 +1,4 @@
-import { DoubleSide, IUniform, ShaderMaterial, Vector3 } from 'three';
+import { DoubleSide, IUniform, ShaderMaterial, TwoPassDoubleSide, Vector3 } from 'three';
 
 export class AtmosphereMaterial extends ShaderMaterial {
   vertexShader = `
@@ -8,7 +8,8 @@ export class AtmosphereMaterial extends ShaderMaterial {
 
     void main() {
 
-        wNormal = vec4(modelMatrix * vec4(normal, 0.0)).xyz;
+        wNormal = vec4(modelMatrix * vec4(normal, 1.0)).xyz;
+
         vNormal = normalize(normalMatrix * normal);
         vEye = normalize(vec3(modelViewMatrix * vec4(position, 1.0)).xyz);
   
@@ -31,22 +32,25 @@ export class AtmosphereMaterial extends ShaderMaterial {
       vec3 outerAtmosphereColor = vec3(0.34, 0.76, 1.0);
       vec3 mixedColor = mix(vec3(1.0), outerAtmosphereColor, innerMask);
 
-      float outerMask = 1.0 - pow(fresnel, 5.0);
+      float outerMask = 1.0 - pow(fresnel + 0.1, 5.0);
       outerMask = clamp(outerMask, 0.0, 1.0);
 
       float combinedMask = innerMask * outerMask;
 
-      combinedMask *= 2.5;
+      combinedMask *= 4.0;
       combinedMask = clamp(combinedMask, 0.0, 1.0);
 
-      float bias = 1.5;
-      float scale = 3.0;
-      float sunDot =  scale * pow(dot(wNormal, sunDirection), 1.0);
+      float bias = 1.0;
+      float scale = 1.0;
+      //float sunDot = bias * scale * pow(dot(wNormal, sunDirection), 1.0);
+      float sunDot = bias * scale * pow(dot(wNormal, normalize(sunDirection)), 1.0);
+      sunDot += 0.25;
       sunDot = clamp(sunDot, 0., 1.);
 
       combinedMask *= sunDot;
 
       gl_FragColor = vec4(vec3(mixedColor), combinedMask);
+      //gl_FragColor = vec4(vec3(outerMask), 1.0);
     }
   `;
 
@@ -55,8 +59,7 @@ export class AtmosphereMaterial extends ShaderMaterial {
   constructor(sunDir: THREE.Vector3) {
     super();
     this.transparent = true;
-    this.side = DoubleSide;
-    this.depthTest = false;
+    this.side = TwoPassDoubleSide;
 
     this.sunDirection.value = sunDir;
 

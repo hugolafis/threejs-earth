@@ -156,7 +156,7 @@ export class Viewer {
       }
     );
 
-    const atmosphericsGeo = new THREE.SphereGeometry(1.005, 256, 256);
+    const atmosphericsGeo = new THREE.SphereGeometry(1.015, 256, 256);
     this.atmosphereMaterial = new AtmosphereMaterial(this.sun.position);
 
     const atmospherics = new THREE.Mesh(atmosphericsGeo, this.atmosphereMaterial);
